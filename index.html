@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MizuHub Key System</title>
+<title>MizuHub Key Popup</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif;}
@@ -20,23 +20,22 @@
   }
 
   h1{
-    font-size:3em;
-    text-shadow:0 0 15px #fff,0 0 30px #fff;
+    font-size:2em;
+    text-shadow:0 0 10px #fff,0 0 20px #fff;
     margin-bottom:20px;
   }
 
   button{
-    margin-top:20px;
-    padding:15px 20px;
-    font-size:1.3em;
+    padding:12px 20px;
+    font-size:1em;
     font-weight:bold;
-    border-radius:20px;
+    border-radius:15px;
     border:2px solid #555;
     background:rgba(0,0,0,0.6);
     color:white;
     cursor:pointer;
-    box-shadow:0 0 10px #fff,0 0 20px #fff inset;
-    transition:0.3s;
+    box-shadow:0 0 6px #fff,0 0 12px #fff inset;
+    transition:0.2s;
     display:flex;
     align-items:center;
     gap:10px;
@@ -44,15 +43,16 @@
 
   button:hover{
     background:rgba(255,255,255,0.1);
-    transform:scale(1.05);
+    transform:scale(1.03);
   }
 
+  /* Popup */
   .popup-bg{
     position:fixed;
     top:0; left:0;
     width:100%; height:100%;
     background:rgba(0,0,0,0.85);
-    display:none;
+    display:flex;
     justify-content:center;
     align-items:center;
     z-index:999;
@@ -60,89 +60,116 @@
 
   .popup{
     background:rgba(0,0,0,0.9);
-    padding:30px;
+    padding:25px 20px;
     border-radius:20px;
     border:2px solid #fff;
-    text-align:center;
-    max-width:300px;
+    text-align:left;
+    max-width:320px;
   }
 
   .popup h2{
-    margin-bottom:20px;
-    font-size:1.5em;
-    text-shadow:0 0 10px #fff;
+    margin-bottom:15px;
+    font-size:1.3em;
+    text-shadow:0 0 8px #fff;
+    text-align:center;
   }
 
-  .popup button{
+  .linkOption{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:12px;
+    cursor:pointer;
+  }
+
+  .linkOption input[type="radio"]{
+    accent-color:white;
+    transform:scale(1.2);
+  }
+
+  .linkOption span{
+    font-size:1em;
+    color:white;
+  }
+
+  .popup button.submitBtn{
     width:100%;
     margin-top:10px;
   }
 
-  #checkpoint{
-    margin-top:25px;
-    font-size:1.1em;
-    text-shadow:0 0 5px #fff;
-    color:#00ff88;
+  .notification{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:white;
+    color:#000;
+    padding:10px 20px;
+    border-radius:10px;
+    box-shadow:0 0 12px #fff;
+    opacity:0;
+    transition:0.4s;
+    z-index:9999;
   }
+  .notification.show{opacity:1;}
 
   footer{
     position:absolute;
-    bottom:20px;
-    font-size:0.9em;
+    bottom:15px;
+    font-size:0.8em;
     color:#aaa;
-    text-shadow:0 0 5px #fff;
+    text-shadow:0 0 4px #fff;
   }
 </style>
 </head>
 <body>
 
-<h1>MizuHub Key System</h1>
+<h1>MizuHub Key Popup</h1>
+<button id="openPopup">Get Key | 🔑</button>
 
-<button id="getKeyBtn">Get Key | 🔑</button>
-
-<div id="checkpoint">Checkpoint 1</div>
-
-<!-- Popup -->
-<div class="popup-bg" id="popupBg">
+<div class="popup-bg" id="popupBg" style="display:none;">
   <div class="popup">
-    <h2>Select a Website</h2>
-    <button class="linkOption" data-url="https://linkvertise.com">Linkvertise</button>
-    <button class="linkOption" data-url="https://work.ink">Work.Ink</button>
-    <button id="cancelBtn">Cancel</button>
+    <h2>Choose a Website</h2>
+    <label class="linkOption">
+      <input type="radio" name="site" value="https://linkvertise.com">
+      <span>Linkvertise</span>
+    </label>
+    <label class="linkOption">
+      <input type="radio" name="site" value="https://work.ink">
+      <span>Work.Ink</span>
+    </label>
+    <button class="submitBtn">Accept To Continue...</button>
   </div>
 </div>
 
+<div class="notification" id="notification"></div>
 <footer>Website By: @mizuscripts</footer>
 
 <script>
-const getKeyBtn = document.getElementById('getKeyBtn');
+const openPopup = document.getElementById('openPopup');
 const popupBg = document.getElementById('popupBg');
-const linkOptions = document.querySelectorAll('.linkOption');
-const cancelBtn = document.getElementById('cancelBtn');
+const submitBtn = document.querySelector('.submitBtn');
+const notification = document.getElementById('notification');
 
-// Open popup when Get Key clicked
-getKeyBtn.addEventListener('click', () => {
-  popupBg.style.display = 'flex';
-});
+function showNotification(text){
+  notification.textContent = text;
+  notification.classList.add('show');
+  setTimeout(()=>notification.classList.remove('show'),1500);
+}
 
-// Cancel button
-cancelBtn.addEventListener('click', () => {
-  popupBg.style.display = 'none';
-});
+openPopup.addEventListener('click',()=>popupBg.style.display='flex');
 
-// Handle link options
-linkOptions.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const url = btn.getAttribute('data-url');
-    // Show Accept to Continue
-    const accept = confirm("Accept To Continue...");
-    if(accept){
-      window.open(url,'_blank');
-    }
-    popupBg.style.display = 'none';
-  });
+submitBtn.addEventListener('click',()=>{
+  const selected = document.querySelector('input[name="site"]:checked');
+  if(selected){
+    window.open(selected.value,'_blank');
+    popupBg.style.display='none';
+    showNotification('Website opened!');
+  }else{
+    showNotification('Please select a website!');
+  }
 });
 </script>
 
 </body>
-</html>
+</html>p
