@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MizuHub | Key System</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif;}
   body{
@@ -74,12 +73,12 @@
     z-index:-1;
   }
 
-  /* Popup modal */
+  /* Modal popup */
   .modal{
     position:fixed;
     top:0; left:0;
     width:100%; height:100%;
-    background:rgba(0,0,0,0.8);
+    background:rgba(0,0,0,0.85);
     display:flex;
     justify-content:center;
     align-items:center;
@@ -87,6 +86,8 @@
     opacity:0;
     transition:0.3s;
     z-index:999;
+    flex-direction:column;
+    gap:20px;
   }
 
   .modal.show{
@@ -96,49 +97,63 @@
 
   .modal-content{
     background:#111;
-    padding:30px 40px;
+    padding:20px 30px;
     border-radius:15px;
-    text-align:center;
+    text-align:left;
     box-shadow:0 0 20px #0f0;
     max-width:300px;
+    width:90%;
   }
 
   .modal-content h2{
-    margin-bottom:20px;
+    margin-bottom:15px;
     color:#0f0;
-    font-size:1.8em;
+    font-size:1.6em;
+    text-align:center;
   }
 
-  .circle-link{
-    width:80px; height:80px;
+  .option{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 12px;
+    margin-bottom:10px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:0.3s;
+    background:rgba(0,255,136,0.05);
+  }
+  .option:hover{
+    background:rgba(0,255,136,0.15);
+  }
+
+  .circle{
+    width:20px;
+    height:20px;
     border-radius:50%;
-    background:#0f0;
+    border:2px solid #0f0;
     display:flex;
     justify-content:center;
     align-items:center;
-    margin:0 auto;
+    font-size:0.9em;
+  }
+
+  .cancel-btn{
+    display:block;
+    margin:10px auto 0 auto;
+    padding:8px 25px;
+    border-radius:12px;
+    border:2px solid #fff;
+    background:rgba(255,255,255,0.05);
     cursor:pointer;
-    font-weight:bold;
-    font-size:1.2em;
-    box-shadow:0 0 10px #0f0,0 0 20px #0f0 inset;
     transition:0.3s;
   }
-
-  .circle-link:hover{
-    transform:scale(1.1);
-    box-shadow:0 0 20px #0f0,0 0 30px #0f0 inset;
-  }
-
-  .close-modal{
-    margin-top:20px;
-    color:#fff;
-    cursor:pointer;
-    text-decoration:underline;
+  .cancel-btn:hover{
+    background:rgba(255,255,255,0.15);
   }
 
   @media(max-width:500px){
     h1{font-size:2em;}
-    .buttons{width:200px;}
   }
 </style>
 </head>
@@ -157,9 +172,16 @@
 <!-- Modal -->
 <div class="modal" id="keyModal">
   <div class="modal-content">
-    <h2>Select Linkvertise</h2>
-    <div class="circle-link" id="linkvertiseBtn">P</div>
-    <div class="close-modal" id="closeModal">Cancel</div>
+    <h2>Select Link</h2>
+    <div class="option" data-link="https://linkvertise.com">
+      <span>Linkvertise</span>
+      <div class="circle">O</div>
+    </div>
+    <div class="option" data-link="https://work.ink">
+      <span>Work.Ink</span>
+      <div class="circle">O</div>
+    </div>
+    <button class="cancel-btn" id="closeModal">Cancel</button>
   </div>
 </div>
 
@@ -226,13 +248,17 @@
   const keyBtn = document.getElementById('getKey');
   const modal = document.getElementById('keyModal');
   const closeModalBtn = document.getElementById('closeModal');
-  const linkvertiseBtn = document.getElementById('linkvertiseBtn');
 
   keyBtn.addEventListener('click',()=> modal.classList.add('show'));
   closeModalBtn.addEventListener('click',()=> modal.classList.remove('show'));
-  linkvertiseBtn.addEventListener('click',()=>{
-    window.open('https://linkvertise.com','_blank');
-    modal.classList.remove('show');
+
+  // Option click
+  document.querySelectorAll('.option').forEach(opt=>{
+    opt.addEventListener('click',()=>{
+      const link = opt.dataset.link;
+      window.open(link,'_blank');
+      modal.classList.remove('show');
+    });
   });
 </script>
 
